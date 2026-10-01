@@ -1,0 +1,27 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::tracy-c-champion-prod/index.html",
+        "arn:aws:s3:::tracy-c-champion-prod/index-v2.html",
+        "arn:aws:s3:::tracy-c-champion-prod/css/*",
+        "arn:aws:s3:::tracy-c-champion-prod/js/*",
+        "arn:aws:s3:::tracy-c-champion-prod/admin/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cloudfront:CreateInvalidation",
+        "cloudfront:GetInvalidation"
+      ],
+      "Resource": "arn:aws:cloudfront::981158178644:distribution/EGBWCLPNB2AZV"
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Resume Admin</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 0 24px;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #status {
+      margin: 20px 0;
+    }
+
+    #authenticated {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Resume Admin</h1>
+
+  <div id="status">
+    Checking authentication...
+  </div>
+
+  <div id="unauthenticated">
+    <button id="login-button">
+      Sign in
+    </button>
+  </div>
+
+<div id="authenticated">
+
+  <p>You are authenticated.</p>
+
+  <h2>Edit Profile Headline</h2>
+
+<section id="profile-editor">
+  <h2>Profile</h2>
+
+  <p>
+    <label for="eyebrow">Eyebrow</label><br>
+    <input
+      type="text"
+      id="eyebrow"
+      style="width:100%; padding:10px; box-sizing:border-box;"
+    >
+  </p>
+
+  <p>
+    <label for="name">Name</label><br>
+    <input
+      type="text"
+      id="name"
+      style="width:100%; padding:10px; box-sizing:border-box;"
+    >
+  </p>
+
+  <p>
+    <label for="headline">Headline</label><br>
+    <input
+      type="text"
+      id="headline"
+      style="width:100%; padding:10px; box-sizing:border-box;"
+    >
+  </p>
+
+  <p>
+    <label for="summary-1">Summary — Paragraph 1</label><br>
+    <textarea
+      id="summary-1"
+      rows="6"
+      style="width:100%; padding:10px; box-sizing:border-box;"
+    ></textarea>
+  </p>
+
+  <p>
+    <label for="summary-2">Summary — Paragraph 2</label><br>
+    <textarea
+      id="summary-2"
+      rows="6"
+      style="width:100%; padding:10px; box-sizing:border-box;"
+    ></textarea>
+  </p>
+
+  <button id="save-profile-button">
+    Save Profile
+  </button>
+
+  <p id="save-status"></p>
+</section>
+  <br><br>
+
+  <input
+    type="text"
+    id="headline"
+    style="width: 100%; padding: 10px; box-sizing: border-box;"
+  >
+
+  <br><br>
+
+  <button id="save-profile-button">
+    Save Headline
+  </button>
+
+  <p id="save-status"></p>
+
+  <br>
+
+  <button id="logout-button">
+    Sign out
+  </button>
+
+</div>
+
+  <script src="/admin/admin.js?v=5"></script>
+
+</body>
+</html>

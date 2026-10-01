@@ -1,0 +1,49 @@
+name: Deploy Resume Homepage to AWS
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - '.github/workflows/deploy-resume.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: resume-homepage-production
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validate source
+        run: |
+          test -s site/index.html
+          node --check site/js/resume.js
+          node --check site/admin/admin.js
+      - name: Authenticate to AWS
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ vars.AWS_RESUME_DEPLOY_ROLE_ARN }}
+          aws-region: us-east-2
+          allowed-account-ids: '981158178644'
+          role-session-name: resume-${{ github.run_id }}
+      - name: Upload resume assets then pages
+        run: |
+          aws s3 cp site/ s3://tracy-c-champion-prod/ --recursive --exclude '*' --include 'css/*' --include 'js/*' --include 'admin/*' --exclude '*.html' --exclude '*/.DS_Store' --cache-control 'public,max-age=300' --no-progress
+          aws s3 cp site/ s3://tracy-c-champion-prod/ --recursive --exclude '*' --include 'index.html' --include 'index-v2.html' --include 'admin/*.html' --content-type text/html --cache-control 'public,max-age=60' --no-progress
+      - name: Refresh resume cache
+        run: |
+          invalidation_id=$(aws cloudfront create-invalidation --distribution-id EGBWCLPNB2AZV --paths '/' '/index.html' '/index-v2.html' '/css/*' '/js/*' '/admin/*' --query 'Invalidation.Id' --output text)
+          aws cloudfront wait invalidation-completed --distribution-id EGBWCLPNB2AZV --id "$invalidation_id"
+      - name: Verify deployed homepage
+        run: |
+          curl --fail --silent --show-error --retry 3 https://www.tracycchampion.com/ -o /tmp/resume-live.html
+          cmp site/index.html /tmp/resume-live.html
+          curl --fail --silent --show-error https://www.tracycchampion.com/jobdashboard/ -o /tmp/dashboard-live.html
+          grep -q 'Job Match Dashboard' /tmp/dashboard-live.html
+          echo 'Published: https://www.tracycchampion.com/' >> "$GITHUB_STEP_SUMMARY"
